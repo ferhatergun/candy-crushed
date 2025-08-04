@@ -7,7 +7,7 @@ import {
   shiftDown,
 } from "@/utils/gridUtils";
 import { playSound } from "@/utils/SoundUtility";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Animated } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
@@ -41,6 +41,28 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
       )
     )
   ).current;
+
+ // Clear any existing matches on the board (e.g. at game start)
+  useEffect(() => {
+    const resolveInitialMatches = async () => {
+      if (!data) return;
+      let newGrid = JSON.parse(JSON.stringify(data));
+      let matches = await checkForMatches(newGrid);
+      if (matches.length === 0) return;
+
+      while (matches.length > 0) {
+        newGrid = await clearMatches(newGrid, matches);
+        newGrid = await shiftDown(newGrid);
+        newGrid = await fillRandomCandies(newGrid);
+        matches = await checkForMatches(newGrid);
+      }
+
+      setData(newGrid);
+    };
+
+    resolveInitialMatches();
+  }, [data, setData]);
+
 
   const handleSwipe = async ({
     colIndex,
@@ -102,15 +124,44 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
         let matches = await checkForMatches(newGrid);
         let totalClearedCandies = 0;
 
-        if (matches?.length > 0) {
-          while (matches?.length > 0) {
-            playSound("candy_clear");
-            totalClearedCandies += matches.length;
-            newGrid = await clearMatches(newGrid, matches);
-            newGrid = await shiftDown(newGrid);
-            newGrid = await fillRandomCandies(newGrid);
-            matches = await checkForMatches(newGrid);
-          }
+ if (!matches || matches.length === 0) {
+          [newGrid[rowIndex][colIndex], newGrid[targetRow][targetCol]] = [
+            newGrid[targetRow][targetCol],
+            newGrid[rowIndex][colIndex],
+          ];
+          Animated.parallel([
+            Animated.timing(animatedValues[rowIndex][colIndex]!.x, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(animatedValues[rowIndex][colIndex]!.y, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(animatedValues[targetRow][targetCol]!.x, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.timing(animatedValues[targetRow][targetCol]!.y, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+          ]).start();
+          return;
+        }
+
+        // Handle matches and cascades
+        while (matches.length > 0) {
+          playSound("candy_clear");
+          totalClearedCandies += matches.length;
+          newGrid = await clearMatches(newGrid, matches);
+          newGrid = await shiftDown(newGrid);
+          newGrid = await fillRandomCandies(newGrid);
+          matches = await checkForMatches(newGrid);
         }
 
         // Reset animasyon değerleri
@@ -134,8 +185,7 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
           setData(newGrid);
         }
 
-        setCollectedCandies((prev: number) => prev + totalClearedCandies + 1);
-      });
+setCollectedCandies((prev: number) => prev + totalClearedCandies);      });
     }
   };
 

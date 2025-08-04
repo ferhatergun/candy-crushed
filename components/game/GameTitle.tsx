@@ -8,6 +8,7 @@ import {
   GestureDetector,
   gestureHandlerRootHOC,
 } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 interface GameTitleProps {
@@ -31,7 +32,7 @@ const GameTitle = ({ data, setCollectedCandies, setData }: GameTitleProps) => {
                 key={`${rowIndex}-${colIndex}`}
                 gesture={Gesture.Pan()
                   .onStart((e) => {
-                    handleGesture({
+                    runOnJS(handleGesture)({
                       event: e,
                       rowIndex,
                       colIndex,
@@ -40,7 +41,7 @@ const GameTitle = ({ data, setCollectedCandies, setData }: GameTitleProps) => {
                     });
                   })
                   .onUpdate((e) => {
-                    handleGesture({
+                    runOnJS(handleGesture)({
                       event: e,
                       rowIndex,
                       colIndex,
@@ -49,7 +50,7 @@ const GameTitle = ({ data, setCollectedCandies, setData }: GameTitleProps) => {
                     });
                   })
                   .onEnd((e) => {
-                    handleGesture({
+                    runOnJS(handleGesture)({
                       event: e,
                       rowIndex,
                       colIndex,
