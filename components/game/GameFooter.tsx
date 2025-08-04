@@ -7,7 +7,7 @@ import ScalePress from '../ui/ScalePress'
 const GameFooter = () => {
   return (
     <View style={styles.flex1}>
-      <ScalePress onPress={()=>router.back()}>
+      <ScalePress onPress={()=>router.back()} style={{display: 'flex',alignSelf:'flex-start'}}>
         <Image source={require('@/assets/icons/close.png')} style={styles.closeIcon}/>
       </ScalePress>
     </View>
@@ -24,6 +24,8 @@ const styles = StyleSheet.create({
         width:45,
         height:45,
         resizeMode:'contain',
+        display: 'flex',
+        alignSelf:'flex-start',
     }
 })
 

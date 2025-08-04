@@ -1,4 +1,4 @@
-import { SoundProvider } from "@/screens/SoundContext";
+import { SoundProvider } from "@/utils/SoundContext";
 import {
   DarkTheme,
   DefaultTheme,

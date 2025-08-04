@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import { FONTS } from "../utils/Constants";
 import { RFValue } from "react-native-responsive-fontsize";
+import { FONTS } from "../utils/Constants";
 
 export const levelStyles = StyleSheet.create({
     flex2: {
@@ -17,6 +17,9 @@ export const levelStyles = StyleSheet.create({
         width: 40,
         height: 40,
         resizeMode: 'contain',
+        marginBottom: 10,
+        display: 'flex',
+        alignSelf: 'flex-start',
     },
     levelContainer: {
         flex: 1,

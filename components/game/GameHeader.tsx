@@ -1,12 +1,12 @@
 import { FONTS, formatTime, screenHeight } from "@/utils/Constants";
 import React, { FC } from "react";
 import {
-    Image,
-    ImageBackground,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
+  Image,
+  ImageBackground,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
