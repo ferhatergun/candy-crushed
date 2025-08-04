@@ -1,63 +1,71 @@
-const checkForMatches = async (grid: any[][]) => {
-  const matches: { row: number; col: number }[] = [];
-  // yatay kontrol
-  for (let row = 0; row < grid.length; row++) {
-    let matchLength = 1;
-    for (let col = 1; col < grid[row].length; col++) {
-      if (grid[row][col] !== null && grid[row][col] === grid[row][col + 1]) {
-        matchLength++;
-      } else {
-        if (matchLength >= 3) {
-          for (let i = 0; i < matchLength; i++) {
-            matches.push({ row, col: col - i });
-          }
-        }
-        matchLength = 1;
-      }
-    }
 
-    if (matchLength >= 3) {
-      for (let i = 0; i < matchLength; i++) {
-        matches.push({ row, col: grid[row].length - 1 - i });
-      }
-    }
-  }
+ const checkForMatches = async (grid: any[][]) => {
+   const matches: { row: number; col: number }[] = [];
+  // Horizontal matches
+   for (let row = 0; row < grid.length; row++) {
+     let matchLength = 1;
+     for (let col = 1; col < grid[row].length; col++) {
+     if (
+        grid[row][col] !== null &&
+        grid[row][col] === grid[row][col - 1]
+      ) {
+         matchLength++;
+       } else {
+         if (matchLength >= 3) {
+           for (let i = 0; i < matchLength; i++) {
+            matches.push({ row, col: col - 1 - i });
+           }
+         }
+         matchLength = 1;
+       }
+     }
+ 
+     if (matchLength >= 3) {
+       for (let i = 0; i < matchLength; i++) {
+         matches.push({ row, col: grid[row].length - 1 - i });
+       }
+     }
+   }
+ 
+  // Vertical matches
+   for (let col = 0; col < grid[0].length; col++) {
+     let matchLength = 1;
+     for (let row = 1; row < grid.length; row++) {
+      if (
+        grid[row][col] !== null &&
+        grid[row][col] === grid[row - 1][col]
+      ) {
+         matchLength++;
+       } else {
+         if (matchLength >= 3) {
+           for (let i = 0; i < matchLength; i++) {
+            matches.push({ row: row - 1 - i, col });
+           }
+         }
+         matchLength = 1;
+       }
+     }
+ 
+     if (matchLength >= 3) {
+       for (let i = 0; i < matchLength; i++) {
+         matches.push({ row: grid.length - 1 - i, col });
+       }
+     }
+   }
+ 
+   return matches;
+ };
+ 
+ const clearMatches = async (
+   grid: any[][],
+   matches: { row: number; col: number }[]
+ ) => {
+   matches?.forEach(({ row, col }) => {
+     grid[row][col] = 0;
+   });
+   return grid;
+ };
 
-  // dikey kontrol
-  for (let col = 0; col < grid[0].length; col++) {
-    let matchLength = 1;
-    for (let row = 1; row < grid.length; row++) {
-      if (grid[row][col] !== null && grid[row][col] === grid[row + 1]?.[col]) {
-        matchLength++;
-      } else {
-        if (matchLength >= 3) {
-          for (let i = 0; i < matchLength; i++) {
-            matches.push({ row: row - i, col });
-          }
-        }
-        matchLength = 1;
-      }
-    }
-
-    if (matchLength >= 3) {
-      for (let i = 0; i < matchLength; i++) {
-        matches.push({ row: grid.length - 1 - i, col });
-      }
-    }
-  }
-
-  return matches;
-};
-
-const clearMatches = async (
-  grid: any[][],
-  matches: { row: number; col: number }[]
-) => {
-  matches?.forEach(({ row, col }) => {
-    grid[row][col] = 0;
-  });
-  return grid;
-};
 
 const shiftDown = async (grid: any[][]) => {
   for (let col = 0; col < grid[0].length; col++) {

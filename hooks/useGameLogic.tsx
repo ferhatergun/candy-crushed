@@ -42,7 +42,6 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
     )
   ).current;
 
- // Clear any existing matches on the board (e.g. at game start)
   useEffect(() => {
     const resolveInitialMatches = async () => {
       if (!data) return;
@@ -62,7 +61,6 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
 
     resolveInitialMatches();
   }, [data, setData]);
-
 
   const handleSwipe = async ({
     colIndex,
@@ -124,7 +122,7 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
         let matches = await checkForMatches(newGrid);
         let totalClearedCandies = 0;
 
- if (!matches || matches.length === 0) {
+        if (!matches || matches.length === 0) {
           [newGrid[rowIndex][colIndex], newGrid[targetRow][targetCol]] = [
             newGrid[targetRow][targetCol],
             newGrid[rowIndex][colIndex],
@@ -150,7 +148,13 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
               duration: 200,
               useNativeDriver: true,
             }),
-          ]).start();
+          ]).start(() => {
+            animatedValues[rowIndex][colIndex]!.x.setValue(0);
+            animatedValues[rowIndex][colIndex]!.y.setValue(0);
+            animatedValues[targetRow][targetCol]!.x.setValue(0);
+            animatedValues[targetRow][targetCol]!.y.setValue(0);
+            setData(newGrid);
+          });
           return;
         }
 
@@ -185,7 +189,8 @@ const useGameLogic = ({ data, setData }: GameLogic) => {
           setData(newGrid);
         }
 
-setCollectedCandies((prev: number) => prev + totalClearedCandies);      });
+        setCollectedCandies((prev: number) => prev + totalClearedCandies);
+      });
     }
   };
 
